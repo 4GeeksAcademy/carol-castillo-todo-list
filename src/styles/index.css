@@ -1,11 +1,26 @@
-/* 
+body{
+    margin-top: 5rem;
+    background-color: #f0f0f0;
+    font-family: Arial, sans-serif;
+    
+}
+.list-group{
+    width: 60%;
+    margin: 0 auto;
+    margin-top: 3rem;
+    align-items: center;
+}
 
-    You can write your own styles here...
-    
-    
-    ...Or you can use the import command to include 
-    other sylesheets into your bunde as well, e.j:
-    
-    import 'relative/path/to/stylesheet.scss';
 
-*/
+.todo{
+    margin-bottom: 3rem;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+.list-group-item{
+    display: flex;
+    align-items: center;
+    border-radius: 5px;
+    width: 50%;
+    
+}
