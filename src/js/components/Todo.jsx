@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faListCheck, faTrash } from '@fortawesome/free-solid-svg-icons';
+import { faTrash } from '@fortawesome/free-solid-svg-icons';
 import "../../styles/index.css"
 
 const Todo = () => {
@@ -8,23 +8,64 @@ const Todo = () => {
   const [tareas, setTareas] = useState([]);
   const [hoveredRow, setHoveredRow] = useState(null);
 
-  const handleClick = () => {
-    if (input === "") {
-      alert("No puedes agregar una tarea vacia");
-      return;
-    }
-    if (tareas.includes(input)) {
-      alert("No puedes agregar una tarea repetida");
-      return;
-    }
-    setTareas([...tareas, input])
-    setInput("")
+  useEffect(() => {
+    createUser();
+    getUser();
+  }, []);
+
+  const createUser = () => {
+    fetch("https://playground.4geeks.com/todo/users/CarolinaCastillo", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ name: "Carolina Castillo" }),
+    })
+      .then((response) => response.json())
+      .then((data) => console.log(data))
+      .catch((error) => console.error("Error:", error));
+  }
+
+  const getUser = () => {
+    fetch("https://playground.4geeks.com/todo/users/CarolinaCastillo")
+      .then((response) => response.json())
+      .then((data) => setTareas(data.todos))
+      .catch((error) => console.error("Error:", error));
+  }
+
+  const createTask = () => {
+    fetch("https://playground.4geeks.com/todo/todos/CarolinaCastillo", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ label: input, is_done: false }),
+    })
+      .then((response) => response.json())
+      .then((data) => setTareas((prevTareas) => [...prevTareas, data]))
+      .catch((error) => console.error("Error:", error));
 
   }
+
   const deleteTask = (tarea) => {
-    const newTareas = tareas.filter((i) => i !== tarea);
-    setTareas(newTareas);
+    fetch(`https://playground.4geeks.com/todo/todos/${tarea.id}`, {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    })
+      .then(() => {
+        const newTareas = tareas.filter((i) => i !== tarea);
+        setTareas(newTareas);
+      })
+      .catch((error) => console.error("Error:", error));
   }
+
+  const handleClick = () => {
+    createTask();
+    setInput("")
+  }
+
   const handleEnterEvent = (event) => {
     if (event.key === "Enter") {
       handleClick();
@@ -55,7 +96,7 @@ const Todo = () => {
               onMouseLeave={() => setHoveredRow(null)}
             >
               <div>
-                {tarea}
+                {tarea.label}
               </div>
               <div>
                 {hoveredRow === index && (
